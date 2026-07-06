@@ -29,6 +29,7 @@ use App\Http\Controllers\Admin\CarouselController     as AdminCarouselController
 use App\Http\Controllers\Admin\VoucherController      as AdminVoucherController;
 use App\Http\Controllers\Admin\ReviewController       as AdminReviewController;
 use App\Http\Controllers\Admin\VideoController        as AdminVideoController;
+use App\Http\Controllers\Admin\RevenueReportController as AdminRevenueReportController;
 
 // ============================================================
 // PENJUAL CONTROLLERS
@@ -39,6 +40,7 @@ use App\Http\Controllers\Penjual\OrderController      as PenjualOrderController;
 use App\Http\Controllers\Penjual\VoucherController    as PenjualVoucherController;
 use App\Http\Controllers\Penjual\ReviewController     as PenjualReviewController;
 use App\Http\Controllers\Penjual\VideoController      as PenjualVideoController;
+use App\Http\Controllers\Penjual\RevenueReportController as PenjualRevenueReportController;
 
 /*
 |--------------------------------------------------------------------------
@@ -138,6 +140,7 @@ Route::middleware(['auth'])->group(function () {
     // ----------------------------------------------------------
     Route::post('/shorts/{video}/like',    [ProductVideoController::class, 'like'])->name('videos.like');
     Route::post('/shorts/{video}/comment', [ProductVideoController::class, 'comment'])->name('videos.comment');
+    Route::post('/shorts/{video}/reply',   [ProductVideoController::class, 'reply'])->name('videos.reply');
 
     // ----------------------------------------------------------
     // PROFILE
@@ -206,6 +209,13 @@ Route::middleware(['auth', 'role:admin'])
     Route::delete('/videos/{video}',                    [AdminVideoController::class, 'destroy'])->name('videos.destroy');
 
     // ----------------------------------------------------------
+    // VIDEO COMMENTS
+    // ----------------------------------------------------------
+    Route::get('/video-comments',                       [\App\Http\Controllers\Admin\VideoCommentController::class, 'index'])->name('video-comments.index');
+    Route::delete('/video-comments/{comment}',          [\App\Http\Controllers\Admin\VideoCommentController::class, 'destroy'])->name('video-comments.destroy');
+    Route::delete('/video-comments/bulk',               [\App\Http\Controllers\Admin\VideoCommentController::class, 'bulkDestroy'])->name('video-comments.bulk-destroy');
+
+    // ----------------------------------------------------------
     // USERS
     // ----------------------------------------------------------
     Route::resource('users', AdminUserController::class);
@@ -229,6 +239,12 @@ Route::middleware(['auth', 'role:admin'])
     Route::get('/orders/{order}',                        [AdminOrderController::class, 'show'])->name('orders.show');
     Route::patch('/orders/{order}/status',               [AdminOrderController::class, 'updateStatus'])->name('orders.update-status');
     Route::patch('/orders/{order}/payment',              [AdminOrderController::class, 'updatePaymentStatus'])->name('orders.update-payment');
+
+    // ----------------------------------------------------------
+    // REVENUE REPORTS
+    // ----------------------------------------------------------
+    Route::get('/reports/revenue',                       [AdminRevenueReportController::class, 'index'])->name('revenue-report.index');
+    Route::get('/reports/revenue/export/{type}',         [AdminRevenueReportController::class, 'export'])->name('revenue-report.export');
 });
 
 /*
@@ -259,6 +275,12 @@ Route::middleware(['auth', 'role:penjual'])
     Route::get('/orders/{order}', [PenjualOrderController::class, 'show'])->name('orders.show');
 
     // ----------------------------------------------------------
+    // REVENUE REPORTS
+    // ----------------------------------------------------------
+    Route::get('/reports/revenue',                       [PenjualRevenueReportController::class, 'index'])->name('revenue-report.index');
+    Route::get('/reports/revenue/export/{type}',         [PenjualRevenueReportController::class, 'export'])->name('revenue-report.export');
+
+    // ----------------------------------------------------------
     // VOUCHERS (Read Only)
     // ----------------------------------------------------------
     Route::get('/vouchers',           [PenjualVoucherController::class, 'index'])->name('vouchers.index');
@@ -280,4 +302,10 @@ Route::middleware(['auth', 'role:penjual'])
     Route::post('/videos',                              [PenjualVideoController::class, 'store'])->name('videos.store');
     Route::get('/videos/{video}',                       [PenjualVideoController::class, 'show'])->name('videos.show');
     Route::delete('/videos/{video}',                    [PenjualVideoController::class, 'destroy'])->name('videos.destroy');
+
+    // ----------------------------------------------------------
+    // VIDEO COMMENTS
+    // ----------------------------------------------------------
+    Route::get('/video-comments',                       [\App\Http\Controllers\Penjual\VideoCommentController::class, 'index'])->name('video-comments.index');
+    Route::delete('/video-comments/{comment}',          [\App\Http\Controllers\Penjual\VideoCommentController::class, 'destroy'])->name('video-comments.destroy');
 });

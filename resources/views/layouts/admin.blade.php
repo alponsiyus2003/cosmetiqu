@@ -12,7 +12,10 @@
         :root { --primary-color: #6030C1; --secondary-color: #8B5CF6; --sidebar-bg: linear-gradient(180deg, #6030C1 0%, #4e28a0 100%); }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Poppins', sans-serif; background-color: #f8f9fa; }
-        .sidebar { min-height: 100vh; background: var(--sidebar-bg); color: white; position: fixed; width: 250px; padding: 20px; box-shadow: 4px 0 10px rgba(0,0,0,0.1); }
+        .sidebar { min-height: 100vh; max-height: 100vh; overflow-y: auto; overflow-x: hidden; background: var(--sidebar-bg); color: white; position: fixed; width: 250px; padding: 20px; box-shadow: 4px 0 10px rgba(0,0,0,0.1); scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.35) transparent; }
+        .sidebar::-webkit-scrollbar { width: 7px; }
+        .sidebar::-webkit-scrollbar-track { background: transparent; }
+        .sidebar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.35); border-radius: 999px; }
         .sidebar .brand { text-align: center; padding: 20px 0; border-bottom: 1px solid rgba(255,255,255,0.2); margin-bottom: 20px; }
         .sidebar .brand img { height: 50px; width: auto; margin-bottom: 10px; }
         .sidebar .brand h4 { font-weight: 700; margin: 0; }
@@ -38,7 +41,7 @@
         .table-hover tbody tr:hover { background-color: #f8f9fa; }
         .badge { padding: 6px 12px; border-radius: 6px; font-weight: 600; }
         .page-header { margin-bottom: 30px; padding-bottom: 15px; border-bottom: 2px solid #e9ecef; }
-        @media (max-width: 768px) { .sidebar { width: 100%; position: relative; min-height: auto; } .main-content { margin-left: 0; padding: 15px; } }
+        @media (max-width: 768px) { .sidebar { width: 100%; position: relative; min-height: auto; max-height: none; overflow-y: visible; } .main-content { margin-left: 0; padding: 15px; } }
     </style>
     @stack('styles')
 </head>
@@ -98,8 +101,19 @@
             </a>
         </li>
         <li class="nav-item">
+            <a class="nav-link {{ request()->routeIs('admin.video-comments.*') ? 'active' : '' }}"
+            href="{{ route('admin.video-comments.index') }}">
+                <i class="fas fa-comments"></i> Komentar Video
+            </a>
+        </li>
+        <li class="nav-item">
             <a class="nav-link {{ request()->routeIs('admin.orders.*') ? 'active' : '' }}" href="{{ route('admin.orders.index') }}">
                 <i class="fas fa-shopping-cart"></i> Kelola Pesanan
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {{ request()->routeIs('admin.revenue-report.*') ? 'active' : '' }}" href="{{ route('admin.revenue-report.index') }}">
+                <i class="fas fa-chart-line"></i> Laporan Pendapatan
             </a>
         </li>
         <hr style="border-color: rgba(255,255,255,0.3); margin: 20px 0;">

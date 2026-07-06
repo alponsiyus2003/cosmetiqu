@@ -34,6 +34,9 @@
     transition: transform 0.2s, box-shadow 0.2s;
     cursor: pointer;
     position: relative;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
 }
 
 .video-card:hover {
@@ -45,27 +48,21 @@
 .video-preview {
     position: relative;
     width: 100%;
-    padding-top: 133.33%; /* 3:4 aspect ratio like Shopee Video */
-    background: #000;
+    aspect-ratio: 3 / 4;
+    min-height: 220px;
+    background: linear-gradient(135deg, #130b2e 0%, #6030C1 100%);
     overflow: hidden;
+    border-radius: 16px 16px 0 0;
 }
 
-.video-preview video {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
+.video-preview video,
 .video-preview img {
     position: absolute;
-    top: 0;
-    left: 0;
+    inset: 0;
     width: 100%;
     height: 100%;
     object-fit: cover;
+    display: block;
 }
 
 /* Play overlay */
@@ -130,6 +127,9 @@
 /* Video Info */
 .video-info {
     padding: 14px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
 }
 
 .video-title {
@@ -299,6 +299,10 @@
 
     .video-info {
         padding: 10px;
+    }
+
+    .video-preview {
+        min-height: 180px;
     }
 
     .video-title {

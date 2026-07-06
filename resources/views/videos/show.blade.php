@@ -577,6 +577,44 @@
                                 <span class="comment-time">• {{ $comment->created_at->diffForHumans() }}</span>
                             </div>
                             <div class="comment-text">{{ $comment->comment }}</div>
+
+                            @auth
+                                <div class="mt-2">
+                                    <button type="button"
+                                            class="btn btn-link btn-sm p-0 text-primary"
+                                            onclick="toggleReplyForm({{ $comment->id }})">
+                                        <i class="fas fa-reply me-1"></i>Balas
+                                    </button>
+                                </div>
+                                <div id="replyForm-{{ $comment->id }}" class="mt-2 d-none">
+                                    <div class="d-flex gap-2">
+                                        <input type="text"
+                                               class="form-control form-control-sm"
+                                               id="replyInput-{{ $comment->id }}"
+                                               placeholder="Tulis balasan..."
+                                               maxlength="1000">
+                                        <button class="btn btn-sm btn-primary"
+                                                onclick="postReply({{ $video->id }}, {{ $comment->id }})">
+                                            <i class="fas fa-paper-plane"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            @endauth
+
+                            @if($comment->replies->count() > 0)
+                                <div class="mt-3">
+                                    @foreach($comment->replies as $reply)
+                                        <div class="border-start border-2 ps-3 py-2 mb-2" style="border-color: #e9d5ff !important;">
+                                            <div class="fw-semibold small">
+                                                {{ $reply->user->name }}
+                                                <span class="text-muted">• {{ $reply->role }}</span>
+                                                <span class="comment-time">• {{ $reply->created_at->diffForHumans() }}</span>
+                                            </div>
+                                            <div class="comment-text mt-1">{{ $reply->reply }}</div>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            @endif
                         </div>
                     </div>
                 @empty
@@ -589,6 +627,9 @@
 
 @push('scripts')
 <script>
+const likeUrl = '{{ route('videos.like', ['video' => $video->id]) }}';
+const commentUrl = '{{ route('videos.comment', ['video' => $video->id]) }}';
+
 // Like video
 let isLiked = {{ $video->isLikedBy(auth()->id() ?? 0) ? 'true' : 'false' }};
 
@@ -598,7 +639,7 @@ function toggleLike(videoId) {
         return;
     @endguest
 
-    fetch(`/videos/${videoId}/like`, {
+    fetch(likeUrl, {
         method: 'POST',
         headers: {
             'X-CSRF-TOKEN': '{{ csrf_token() }}',
@@ -629,7 +670,7 @@ function postComment(videoId) {
 
     if (!comment) return;
 
-    fetch(`/videos/${videoId}/comment`, {
+    fetch(commentUrl, {
         method: 'POST',
         headers: {
             'X-CSRF-TOKEN': '{{ csrf_token() }}',
@@ -652,6 +693,36 @@ function scrollToComments() {
     if (section) {
         section.scrollIntoView({ behavior: 'smooth' });
     }
+}
+
+function toggleReplyForm(commentId) {
+    const form = document.getElementById(`replyForm-${commentId}`);
+    if (form) {
+        form.classList.toggle('d-none');
+    }
+}
+
+function postReply(videoId, commentId) {
+    const input = document.getElementById(`replyInput-${commentId}`);
+    const reply = input.value.trim();
+
+    if (!reply) return;
+
+    fetch('{{ route('videos.reply', ['video' => $video->id]) }}', {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ comment_id: commentId, reply })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            input.value = '';
+            location.reload();
+        }
+    });
 }
 
 // Share video

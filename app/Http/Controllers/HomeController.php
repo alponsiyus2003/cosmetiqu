@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\Carousel;
-use Illuminate\Http\Request;
+use App\Models\ProductVideo;
 
 class HomeController extends Controller
 {
@@ -24,6 +24,12 @@ class HomeController extends Controller
             ->take(8)
             ->get();
 
-        return view('home', compact('carousels', 'categories', 'featuredProducts'));
+        $shortVideos = ProductVideo::with(['product', 'user'])
+            ->active()
+            ->latest()
+            ->take(4)
+            ->get();
+
+        return view('home', compact('carousels', 'categories', 'featuredProducts', 'shortVideos'));
     }
 }

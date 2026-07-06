@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\ProductVideo;
 use App\Models\Product;
+use App\Models\ProductVideoCommentReply;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
@@ -79,6 +80,38 @@ class ProductVideoController extends Controller
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }
+    }
+
+    public function reply(Request $request, ProductVideo $video)
+    {
+        $request->validate([
+            'comment_id' => 'required|exists:product_video_comments,id',
+            'reply' => 'required|string|max:1000',
+        ]);
+
+        $user = auth()->user();
+        $comment = $video->comments()->findOrFail($request->comment_id);
+
+        $role = 'pembeli';
+        if ($user->isAdmin()) {
+            $role = 'admin';
+        } elseif ($user->isPenjual()) {
+            $role = 'penjual';
+        }
+
+        $reply = ProductVideoCommentReply::create([
+            'product_video_comment_id' => $comment->id,
+            'user_id' => $user->id,
+            'reply' => $request->reply,
+            'role' => $role,
+        ]);
+
+        $reply->load('user');
+
+        return response()->json([
+            'success' => true,
+            'reply' => $reply,
+        ]);
     }
 
     // Upload video page

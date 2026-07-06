@@ -25,4 +25,9 @@ class ProductVideoComment extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function replies()
+    {
+        return $this->hasMany(ProductVideoCommentReply::class, 'product_video_comment_id')->latest();
+    }
 }

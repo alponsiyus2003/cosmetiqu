@@ -124,8 +124,63 @@
     </div>
 </section>
 
-<!-- Featured Products Section -->
+<!-- Shorts Video Section -->
 <section class="py-5 bg-light">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h2 class="fw-bold mb-1">Shorts Video</h2>
+                <p class="text-muted mb-0">Lihat video produk terbaru dari seller favorit Anda</p>
+            </div>
+            <a href="{{ route('videos.index') }}" class="btn btn-outline-primary">
+                Lihat Semua <i class="fas fa-arrow-right ms-2"></i>
+            </a>
+        </div>
+
+        @if($shortVideos->count() > 0)
+            <div class="row g-4">
+                @foreach($shortVideos as $video)
+                    <div class="col-12 col-md-6 col-lg-3">
+                        <div class="card h-100 border-0 shadow-sm overflow-hidden">
+                            <a href="{{ route('videos.show', $video->id) }}" class="position-relative d-block">
+                                @if($video->thumbnail_url)
+                                    <img src="{{ $video->thumbnail_url }}" class="card-img-top" alt="{{ $video->title ?? $video->product->name }}" style="height: 220px; object-fit: cover;">
+                                @else
+                                    <div class="card-img-top d-flex align-items-center justify-content-center bg-dark" style="height: 220px;">
+                                        <i class="fas fa-play-circle fa-3x text-white"></i>
+                                    </div>
+                                @endif
+                                <div class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center" style="background: rgba(0,0,0,0.2);">
+                                    <span class="badge bg-white text-dark px-3 py-2">
+                                        <i class="fas fa-play me-1"></i> Tonton
+                                    </span>
+                                </div>
+                            </a>
+                            <div class="card-body">
+                                <h6 class="fw-bold mb-2">{{ Str::limit($video->title ?? $video->product->name, 45) }}</h6>
+                                <p class="text-muted small mb-2">
+                                    <i class="fas fa-store me-1"></i> {{ $video->user->name }}
+                                </p>
+                                <div class="d-flex flex-wrap gap-2 small text-muted">
+                                    <span><i class="fas fa-eye me-1"></i>{{ $video->formatted_views }}</span>
+                                    <span><i class="fas fa-heart me-1"></i>{{ $video->formatted_likes }}</span>
+                                    <span><i class="fas fa-comment me-1"></i>{{ $video->comments_count ?? $video->comments->count() }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        @else
+            <div class="alert alert-info text-center">
+                <i class="fas fa-info-circle me-2"></i>Belum ada video shorts tersedia.
+            </div>
+        @endif
+    </div>
+</section>
+
+<!-- Featured Products Section -->
+<section class="py-5 bg-white">
     <div class="container">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2 class="fw-bold">Produk Terbaru</h2>

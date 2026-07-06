@@ -69,8 +69,19 @@
                 </a>
             </li>
             <li class="nav-item">
+                <a class="nav-link {{ request()->routeIs('penjual.video-comments.*') ? 'active' : '' }}"
+                href="{{ route('penjual.video-comments.index') }}">
+                    <i class="fas fa-comments"></i> Komentar Video
+                </a>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link {{ request()->routeIs('penjual.vouchers.*') ? 'active' : '' }}" href="{{ route('penjual.vouchers.index') }}">
                     <i class="fas fa-ticket-alt"></i> Vouchers Aktif
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {{ request()->routeIs('penjual.revenue-report.*') ? 'active' : '' }}" href="{{ route('penjual.revenue-report.index') }}">
+                    <i class="fas fa-chart-line"></i> Laporan Pendapatan
                 </a>
             </li>
             <hr style="border-color: rgba(255,255,255,0.3); margin: 20px 0;">
